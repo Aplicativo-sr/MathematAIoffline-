@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f172a">
+<title>MathMaster Malangute</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080a0d; --card:#141a25; --card2:#1a2130; --line:#232d3f;
+  --txt:#e6eaf2; --muted:#8a94a7; --green:#4ade80; --greenDark:#05210f;
+  --input:#0f191f; --inputBorder:#2a3d4f; --stepBg:#0f1b25; --stepBorder:#223141;
+  --shadow:0 4px 12px rgba(0,0,0,.3);
+}
+[data-theme="light"]{
+  --bg:#f1f5f9; --card:#ffffff; --card2:#f8fafc; --line:#e2e8f0;
+  --txt:#0f172a; --muted:#64748b; --green:#16a34a; --greenDark:#ffffff;
+  --input:#f8fafc; --inputBorder:#cbd5e1; --stepBg:#f1f5f9; --stepBorder:#e2e8f0;
+  --shadow:0 4px 12px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,sans-serif;transition:background .2s,color .2s,border-color .2s}
+body{margin:0;background:var(--bg);display:flex;justify-content:center;min-height:100vh;color:var(--txt)}
+.phone{width:100%;max-width:520px;background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+.header{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--card);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+.header .title h1{margin:0;color:var(--txt);font-size:19px;font-weight:800}
+.header .title h1 span{color:var(--green)}
+.header .title small{color:var(--muted);font-size:10.5px;display:block;margin-top:3px}
+.themeBtn{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:12px;width:42px;height:42px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.themeBtn:active{transform:scale(.95)}
+.tabs-wrap{border-bottom:1px solid var(--line);background:var(--card);padding:10px 0}
+.tabs{padding:0 12px;display:flex;gap:6px;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:8px 12px;border-radius:999px;font-size:10.5px;font-weight:700;border:1px solid var(--line);background:var(--card2);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.15s;display:flex;align-items:center;gap:5px}
+.tab.active{background:var(--green);color:var(--greenDark);border-color:var(--green)}
+.tab .ic{font-size:12px}
+.content{flex:1;padding:0 12px 32px;overflow:auto}
+.card{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.label{color:var(--green);font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.label::before{content:'';display:inline-block;width:4px;height:14px;background:var(--green);border-radius:2px}
+.def{color:var(--txt);font-size:12.5px;line-height:1.65;background:var(--card2);border-radius:10px;padding:11px 13px;margin-bottom:10px;border-left:3px solid var(--green)}
+.def b{color:var(--green)}
+.formula{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);background:var(--input);border:1px dashed var(--inputBorder);border-radius:10px;padding:10px 12px;text-align:center;word-break:break-word;white-space:pre-wrap}
+.inputRow{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.field{flex:1;min-width:80px}
+.field span{color:var(--muted);font-size:10.5px;font-weight:600;display:block;margin-bottom:5px}
+.field input{width:100%;background:var(--input);border:1px solid var(--inputBorder);border-radius:10px;padding:11px 12px;color:var(--txt);font-size:13.5px;outline:none;font-family:inherit}
+.field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.15)}
+.btn{width:100%;margin-top:12px;background:var(--green);border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:var(--greenDark);cursor:pointer;transition:.15s;box-shadow:0 2px 8px rgba(74,222,128,.3)}
+.btn:active{transform:scale(.98)}
+.resultCard{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;display:flex;border-left:4px solid var(--green);box-shadow:var(--shadow);overflow:hidden}
+.rContent{padding:14px;flex:1}
+.rLabel{color:var(--green);font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:6px}
+.rBig{color:var(--txt);font-size:16px;font-weight:800;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.rSmall{color:var(--muted);font-size:11px;margin-top:4px;white-space:pre-wrap}
+.steps{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.step-header{background:var(--card2);padding:11px 14px;border-bottom:1px solid var(--line)}
+.step-header b{color:var(--green);font-size:11px}
+.step-body{padding:12px 14px}
+.step{margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.step:last-child{border:none;margin:0;padding-bottom:0}
+.step-title{color:var(--green);font-size:11px;font-weight:700;margin-bottom:5px}
+.step-math{font-family:'JetBrains Mono',monospace;background:var(--stepBg);border:1px solid var(--stepBorder);border-radius:8px;padding:9px 11px;color:var(--txt);font-size:11.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.step-explain{color:var(--muted);font-size:11px;margin-top:5px;line-height:1.5}
+.footer{text-align:center;color:var(--muted);font-size:10px;margin-top:20px;padding:0 20px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="header">
+  <div class="title">
+    <h1>Math<span>Master</span> Malangute</h1>
+    <small>No caso de sugestão estamos no 852803505</small>
+  </div>
+  <button class="themeBtn" id="themeBtn" onclick="toggleTheme()" title="Mudar tema">🌙</button>
+</div>
+<div class="tabs-wrap"><div class="tabs" id="cats"></div></div>
+<div class="tabs-wrap"><div class="tabs" id="mods"></div></div>
+<div class="content">
+  <div class="card" id="formulaCard"></div>
+  <div class="card" id="inputsCard"></div>
+  <div class="resultCard"><div class="rContent"><div class="rLabel">📊 RESULTADO</div><div class="rBig" id="rBig"></div><div class="rSmall" id="rSmall"></div></div></div>
+  <div class="steps"><div class="step-header"><b>📖 PASSO A PASSO</b></div><div class="step-body" id="stepBody"></div></div>
+  <div class="footer">MathMaster Malangute • estamos abertos 07:00am-06:00ap› ⋮ › explicação de matemática, física e química estamos no 852803505</div>
+</div>
+</div>
+<script>
+/* ======= TEMA ======= */
+function toggleTheme(){
+  let cur=document.documentElement.getAttribute('data-theme')||'dark';
+  let nxt=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',nxt);
+  document.getElementById('themeBtn').textContent=nxt==='dark'?'🌙':'☀️';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content',nxt==='dark'?'#0f172a':'#f1f5f9');
+  try{localStorage.setItem('mmTheme',nxt);}catch(e){}
+}
+(function(){
+  try{
+    let t=localStorage.getItem('mmTheme')||'dark';
+    document.documentElement.setAttribute('data-theme',t);
+    document.getElementById('themeBtn').textContent=t==='dark'?'🌙':'☀️';
+  }catch(e){}
+})();
+
+/* ======= MATEMÁTICA BASE ======= */
+const PI=Math.PI;
+const fact=n=>{n=Math.floor(Number(n)); if(isNaN(n)||n<0)return NaN; if(n<=1)return 1; let r=1; for(let i=2;i<=n;i++)r*=i; return r;};
+const fx=n=>{if(n<=1)return '1'; let a=[]; for(let i=n;i>=1;i--)a.push(i); return a.join('×');};
+const isPrime=v=>{if(v<2)return false; for(let i=2;i*i<=v;i++)if(v%i===0)return false; return true;};
+const primes=n=>{let a=[]; for(let i=2;i<=n;i++)if(isPrime(i))a.push(i); return a;};
+const df=n=>{n=Math.floor(n); if(n<=1)return 1; let r=1; for(let i=n;i>0;i-=2)r*=i; return r;};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const lcm=(a,b)=>Math.abs(a*b)/gcd(a,b);
+const parseList=s=>String(s).split(/[,\s;]+/).filter(x=>x!=='').map(Number).filter(x=>!isNaN(x));
+const S=(t,m,e)=>({t,math:m,explain:e});
+
+/* ======= CATEGORIAS ======= */
+const CATS=[
+  {id:'arit',n:'Aritmética',ic:'🔢'},
+  {id:'alg',n:'Álgebra',ic:'📐'},
+  {id:'comb',n:'Combinatória',ic:'🎲'},
+  {id:'calc',n:'Cálculo',ic:'∫'},
+  {id:'gpl',n:'Geom. Plana',ic:'⬛'},
+  {id:'gpe',n:'Geom. Espacial',ic:'🧊'},
+  {id:'trig',n:'Trigonometria',ic:'📏'},
+  {id:'prog',n:'Progressões',ic:'📈'},
+  {id:'est',n:'Estatística',ic:'📊'},
+  {id:'fin',n:'Financeira',ic:'💰'},
+  {id:'log',n:'Logaritmos',ic:'📉'},
+];
+
+const mods={};
+/* ============ ARITMÉTICA ============ */
+mods.mmc={cat:'arit',n:'MMC',d:'<b>MMC</b> (Mínimo Múltiplo Comum) é o menor número divisível por todos ao mesmo tempo. Ex: MMC(4,6)=12.',f:'MMC(a,b) = menores fatores primos',i:[{id:'a',l:'a',v:12},{id:'b',l:'b',v:18}],s:(a,b)=>{a=Math.floor(Math.abs(a));b=Math.floor(Math.abs(b)); if(a<1||b<1)return{final:'Erro',sub:'a,b ≥ 1',steps:[]}; let A=a,B=b,fa=[],fb=[],t=a; for(let p=2;p<=t;p++)while(a%p===0){fa.push(p);a/=p;} t=b; for(let p=2;p<=t;p++)while(b%p===0){fb.push(p);b/=p;} let cnt={}; [...fa,...fb].forEach(x=>cnt[x]=(cnt[x]||0)+1); let r=Object.keys(cnt).reduce((acc,p)=>acc*Math.pow(+p,cnt[p]),1); return{final:`MMC(${A},${B}) = ${r}`,sub:`Menor múltiplo comum`,steps:[S('PASSO 1 - Fatorar',`${A} = ${fa.join('×')}\n${B} = ${fb.join('×')}`,'Decompor em primos.'),S('PASSO 2 - Maiores expoentes',Object.keys(cnt).map(p=>`${p}^${cnt[p]}`).join(' × '),'Cada primo com maior expoente.'),S('PASSO 3 - Multiplicar',`${Object.keys(cnt).map(p=>Math.pow(+p,cnt[p])).join('×')} = ${r}`,'Multiplicar.'),S('FINAL',`MMC(${A},${B}) = ${r}`,'Resultado.')]};}};
+
+mods.mdc={cat:'arit',n:'MDC',d:'<b>MDC</b> (Máximo Divisor Comum) é o maior número que divide todos ao mesmo tempo. Ex: MDC(12,18)=6.',f:'MDC(a,b) = fatores primos comuns',i:[{id:'a',l:'a',v:12},{id:'b',l:'b',v:18}],s:(a,b)=>{a=Math.floor(Math.abs(a));b=Math.floor(Math.abs(b)); if(a<1||b<1)return{final:'Erro',sub:'a,b ≥ 1',steps:[]}; let A=a,B=b,steps=[],x=a,y=b; while(y){steps.push(`${x} ÷ ${y} = resto ${x%y}`); let t=x%y; x=y; y=t;} let g=gcd(A,B); return{final:`MDC(${A},${B}) = ${g}`,sub:`Algoritmo de Euclides`,steps:[S('PASSO 1 - Euclides',steps.join('\n'),'Dividir até resto 0.'),S('FINAL',`MDC(${A},${B}) = ${g}`,'Último divisor não nulo.')]};}};
+
+mods.fracao={cat:'arit',n:'FRAÇÃO',d:'<b>Soma de frações</b>: tira-se MMC dos denominadores, ajusta-se numeradores e soma. Ex: 1/2 + 1/3 = 5/6.',f:'a/b + c/d = (a·d + c·b) / (b·d)',i:[{id:'a',l:'a',v:1},{id:'b',l:'b',v:2},{id:'c',l:'c',v:1},{id:'d',l:'d',v:3}],s:(a,b,c,d)=>{if(b===0||d===0)return{final:'Erro',sub:'denominador ≠ 0',steps:[]}; let num=a*d+c*b, den=b*d, g=gcd(Math.abs(num),Math.abs(den)); let sn=num/g, sd=den/g; return{final:`${a}/${b} + ${c}/${d} = ${sn}/${sd}`,sub:`${sn}/${sd} = ${(sn/sd).toFixed(4)}`,steps:[S('PASSO 1 - MMC',`MMC(${b},${d}) = ${lcm(b,d)}`,'Denominador comum.'),S('PASSO 2 - Numeradores',`${a}×${lcm(b,d)/b} + ${c}×${lcm(b,d)/d}`,'Ajustar.'),S('PASSO 3 - Somar',`(${a*d} + ${c*b}) / ${b*d} = ${num}/${den}`,'Somar.'),S('PASSO 4 - Simplificar',`÷${g} → ${sn}/${sd}`,'Dividir MDC.'),S('FINAL',`${sn}/${sd} ≈ ${(sn/sd).toFixed(4)}`,'Resultado.')]};}};
+
+mods.potencia={cat:'arit',n:'POTÊNCIA',d:'<b>Potência</b> aⁿ = multiplicar a por ele mesmo n vezes. Ex: 2³ = 2×2×2 = 8. Casos: a⁰=1, a¹=a.',f:'aⁿ = a × a × ... × a (n vezes)',i:[{id:'a',l:'base a',v:2},{id:'n',l:'expoente n',v:5}],s:(a,n)=>{n=Math.floor(n); let r=Math.pow(a,n); if(n<0) return{final:`${a}^${n} = ${r.toFixed(6)}`,sub:'Expoente negativo',steps:[S('REGRA',`${a}^${n} = 1/${a}^${Math.abs(n)} = ${r.toFixed(6)}`,'Inverte.')]}; if(n===0) return{final:`${a}^0 = 1`,sub:'Regra',steps:[S('REGRA','a⁰ = 1 (a≠0)','Todo número⁰ = 1.')]}; let arr=Array(n).fill(a).join('×'); return{final:`${a}^${n} = ${r}`,sub:`${arr} = ${r}`,steps:[S('PASSO 1',`${a}^${n} = ${arr}`,'Multiplicar base n vezes.'),S('FINAL',`= ${r}`,'Resultado.')]};}};
+
+mods.raiz={cat:'arit',n:'RAIZ',d:'<b>Raiz n-ésima</b> pergunta: qual número elevado a n dá o valor? Ex: √9 = 3 (pois 3² = 9).',f:'ⁿ√x = y ⇔ yⁿ = x',i:[{id:'x',l:'x',v:27},{id:'n',l:'índice n',v:3}],s:(x,n)=>{n=Math.floor(n); if(n===0)return{final:'Erro',sub:'n≠0',steps:[]}; if(n===2&&x<0)return{final:'Erro',sub:'√negativo ∉ ℝ',steps:[]}; let r=Math.sign(x)*Math.pow(Math.abs(x),1/n); return{final:`${n===2?'√':n+'√'}${x} = ${r.toFixed(4)}`,sub:`${r.toFixed(4)}^${n} ≈ ${x}`,steps:[S('PASSO 1',`y = ${x}^(1/${n})`,'Inverter a potência.'),S('PASSO 2',`y = ${r.toFixed(6)}`,'Calcular.'),S('PROVA',`${r.toFixed(4)}^${n} = ${Math.pow(r,n).toFixed(4)}`,'Verificar.')]};}};
+
+mods.regra3={cat:'arit',n:'REGRA DE 3',d:'<b>Regra de 3 simples</b>: se a está para b, então c está para x. Multiplica em cruz. Ex: 2/4 = 3/x → x = 6.',f:'a/b = c/x ⇒ x = b·c/a',i:[{id:'a',l:'a',v:2},{id:'b',l:'b',v:4},{id:'c',l:'c',v:3}],s:(a,b,c)=>{if(a===0)return{final:'Erro',sub:'a≠0',steps:[]}; let x=b*c/a; return{final:`x = ${x}`,sub:`${a}/${b} = ${c}/${x}`,steps:[S('PASSO 1 - Montar',`${a} → ${b}\n${c} → x`,'Proporção.'),S('PASSO 2 - Cruzar',`${a} × x = ${b} × ${c}\n${a}x = ${b*c}`,'Multiplicar em cruz.'),S('PASSO 3 - Isolar',`x = ${b*c}/${a} = ${x}`,'Dividir.'),S('FINAL',`x = ${x}`,'Resultado.')]};}};
+
+mods.percent={cat:'arit',n:'PERCENTAGEM',d:'<b>Percentagem</b>: x% de N = N×x/100. Aumento → ×(1+x/100). Desconto → ×(1-x/100).',f:'x% de N = N × x / 100',i:[{id:'n',l:'valor N',v:200},{id:'p',l:'% x',v:20}],s:(n,p)=>{let v=n*p/100,a=n*(1+p/100),d=n*(1-p/100); return{final:`${p}% de ${n} = ${v}`,sub:`+${p}%: ${a} | -${p}%: ${d}`,steps:[S('PASSO 1',`${p}% = ${p}/100 = ${p/100}`,'Percentagem em fração.'),S('PASSO 2',`${n} × ${p/100} = ${v}`,'Multiplicar.'),S('AUMENTO',`${n} + ${v} = ${a}`,'Somar.'),S('DESCONTO',`${n} - ${v} = ${d}`,'Subtrair.'),S('FINAL',`${p}% de ${n} = ${v}`,'Resultado.')]};}};
+
+/* ============ ÁLGEBRA ============ */
+mods.eq1={cat:'alg',n:'EQ. 1º GRAU',d:'<b>Equação do 1º grau</b>: ax + b = 0. Isola-se x. Ex: 2x+6=0 → x=-3.',f:'ax + b = 0 ⇒ x = -b/a',i:[{id:'a',l:'a',v:2},{id:'b',l:'b',v:6}],s:(a,b)=>{if(a===0)return{final:b===0?'Infinitas':'Sem solução',sub:'a=0',steps:[]}; let x=-b/a; return{final:`x = ${x}`,sub:`${a}x + ${b} = 0`,steps:[S('PASSO 1',`${a}x + ${b} = 0`,'Equação original.'),S('PASSO 2',`${a}x = -${b}`,'Passar b.'),S('PASSO 3',`x = ${-b} / ${a} = ${x}`,'Dividir.'),S('FINAL',`x = ${x}`,'Solução.')]};}};
+
+mods.eq2={cat:'alg',n:'EQ. 2º GRAU',d:'<b>Bhaskara</b>: ax²+bx+c=0. Δ = b²-4ac. x = (-b ± √Δ)/(2a). Δ>0: 2 raízes. Δ=0: 1 raiz. Δ<0: sem raiz real.',f:'x = (-b ± √Δ) / 2a | Δ = b² - 4ac',i:[{id:'a',l:'a',v:1},{id:'b',l:'b',v:-5},{id:'c',l:'c',v:6}],s:(a,b,c)=>{if(a===0)return{final:'Erro',sub:'a≠0',steps:[]}; let D=b*b-4*a*c, steps=[S('PASSO 1 - Identificar',`a=${a}, b=${b}, c=${c}`,'Coeficientes.')]; steps.push(S('PASSO 2 - Delta',`Δ = (${b})² - 4×${a}×${c}\nΔ = ${b*b} - ${4*a*c} = ${D}`,'Discriminante.')); let fin=''; if(D<0){steps.push(S('PASSO 3 - Δ negativo',`Δ < 0 → sem raiz real`,'Sem raiz.')); fin='Sem raiz real';} else if(D===0){let x=-b/(2*a); steps.push(S('PASSO 3 - Raiz única',`Δ = 0 → x = ${-b}/(2×${a}) = ${x}`,'Raiz dupla.')); fin=`x = ${x}`;} else{let sD=Math.sqrt(D), x1=(-b+sD)/(2*a), x2=(-b-sD)/(2*a); steps.push(S('PASSO 3 - √Δ',`√Δ = √${D} = ${sD.toFixed(4)}`,'Raiz.')); steps.push(S('PASSO 4 - Fórmula',`x = (${-b} ± ${sD.toFixed(4)}) / ${2*a}`,'Substituir.')); steps.push(S('PASSO 5 - Duas raízes',`x₁ = ${x1.toFixed(4)}\nx₂ = ${x2.toFixed(4)}`,'+ e −.')); fin=`x₁=${x1.toFixed(4)} | x₂=${x2.toFixed(4)}`;} return{final:fin,sub:`Δ = ${D}`,steps};}};
+
+mods.sistema={cat:'alg',n:'SISTEMA 2x2',d:'<b>Sistema 2x2</b>: duas equações, duas incógnitas. Resolve-se por Cramer. Ex: {2x+y=5; x-y=1}.',f:'a₁x+b₁y=c₁\n a₂x+b₂y=c₂',i:[{id:'a1',l:'a₁',v:2},{id:'b1',l:'b₁',v:1},{id:'c1',l:'c₁',v:5},{id:'a2',l:'a₂',v:1},{id:'b2',l:'b₂',v:-1},{id:'c2',l:'c₂',v:1}],s:(a1,b1,c1,a2,b2,c2)=>{let D=a1*b2-a2*b1; if(D===0)return{final:'Sem solução única',sub:'D=0',steps:[]}; let Dx=c1*b2-c2*b1, Dy=a1*c2-a2*c1; let x=Dx/D, y=Dy/D; return{final:`x = ${x.toFixed(3)} | y = ${y.toFixed(3)}`,sub:`Sistema 2x2`,steps:[S('PASSO 1 - D',`D = ${a1}×${b2} - ${a2}×${b1} = ${D}`,'Det.'),S('PASSO 2 - Dx',`Dx = ${c1}×${b2} - ${c2}×${b1} = ${Dx}`,'Trocar x.'),S('PASSO 3 - Dy',`Dy = ${a1}×${c2} - ${a2}×${c1} = ${Dy}`,'Trocar y.'),S('PASSO 4 - Cramer',`x = ${Dx}/${D} = ${x.toFixed(3)}\ny = ${Dy}/${D} = ${y.toFixed(3)}`,'Dividir.'),S('FINAL',`x=${x.toFixed(3)}, y=${y.toFixed(3)}`,'Solução.')]};}};
+
+mods.notaveis={cat:'alg',n:'PROD. NOTÁVEL',d:'<b>Produtos notáveis</b>: (a+b)²=a²+2ab+b². (a-b)²=a²-2ab+b². (a+b)(a-b)=a²-b².',f:'(a+b)² = a²+2ab+b²',i:[{id:'a',l:'a',v:3},{id:'b',l:'b',v:2}],s:(a,b)=>{let a2=a*a,b2=b*b,ab=2*a*b; return{final:`(a+b)² = ${a2+ab+b2}`,sub:`(a-b)² = ${a2-ab+b2}`,steps:[S('(a+b)²',`(${a}+${b})² = ${a2} + ${ab} + ${b2} = ${a2+ab+b2}`,'Soma.'),S('(a-b)²',`(${a}-${b})² = ${a2} - ${ab} + ${b2} = ${a2-ab+b2}`,'Diferença.'),S('(a+b)(a-b)',`(${a}+${b})(${a}-${b}) = ${a2} - ${b2} = ${a2-b2}`,'Diferença quadrados.')]};}};
+
+/* ============ COMBINATÓRIA ============ */
+mods.fatorial={cat:'comb',n:'FATORIAL',d:'<b>Fatorial (n!)</b>: multiplica por todos até 1. Ex: 5! = 5×4×3×2×1 = 120. Por definição 0! = 1.',f:'n! = n × (n-1) × ... × 1',i:[{id:'n',l:'n',v:5}],s:n=>{n=Math.floor(n); if(n<0||n>170)return{final:'Erro',sub:'0 ≤ n ≤ 170',steps:[]}; if(n<=1)return{final:`${n}! = 1`,sub:'Por definição',steps:[S('DEFINIÇÃO','0! = 1! = 1','Caso base.')]}; let arr=[]; for(let i=n;i>=1;i--)arr.push(i); let acc=arr.map((_,i)=>arr.slice(0,i+1).join('×')+' = '+arr.slice(0,i+1).reduce((a,b)=>a*b,1)).join('\n'); return{final:`${n}! = ${fact(n).toLocaleString()}`,sub:arr.join('×'),steps:[S('PASSO 1',`${n}! = ${arr.join('×')}`,'Multiplicar de n até 1.'),S('PASSO 2 - Acumular',acc,'Produto passo a passo.'),S('FINAL',`${n}! = ${fact(n).toLocaleString()}`,'Resultado.')]};}};
+
+mods.permut={cat:'comb',n:'PERMUTAÇÃO',d:'<b>Permutação</b>: organizar TODOS os elementos. Ordem IMPORTA. Ex: 3 pessoas em fila = 3! = 6 filas.',f:'P(n) = n!',i:[{id:'n',l:'n',v:5}],s:n=>{n=Math.floor(n); if(n<0)return{final:'Erro',sub:'n≥0',steps:[]}; let arr=[]; for(let i=n;i>=1;i--)arr.push(i); return{final:`P(${n}) = ${fact(n).toLocaleString()}`,sub:`${fact(n)} formas`,steps:[S('PASSO 1',`Organizar ${n} (ordem importa).`,'Permutação.'),S('PASSO 2',`P(${n}) = ${n}!`,'Fatorial.'),S('PASSO 3',`${n}! = ${arr.join('×')} = ${fact(n)}`,'Multiplicar.'),S('FINAL',`P(${n}) = ${fact(n)}`,'Resultado.')]};}};
+
+mods.arranjo={cat:'comb',n:'ARRANJO',d:'<b>Arranjo</b>: escolher p de n onde a ORDEM IMPORTA. Ex: pódio 1º,2º,3º de 10 atletas = A(10,3) = 720.',f:'A(n,p) = n! / (n-p)!',i:[{id:'n',l:'n total',v:10},{id:'p',l:'p escolhidos',v:3}],s:(n,p)=>{n=Math.floor(n);p=Math.floor(p); if(p>n||p<0)return{final:'Erro',sub:'p≤n',steps:[]}; let fn=fact(n),fnp=fact(n-p),r=fn/fnp; return{final:`A(${n},${p}) = ${r.toLocaleString()}`,sub:`${r} arranjos`,steps:[S('PASSO 1',`n=${n}, p=${p}. Ordem IMPORTA.`,'Arranjo.'),S('PASSO 2',`A = ${n}!/${n-p}!`,'Fórmula.'),S('PASSO 3',`${n}! = ${fn}\n${n-p}! = ${fnp}`,'Fatoriais.'),S('PASSO 4',`A = ${fn}/${fnp} = ${r}`,'Dividir.'),S('FINAL',`A(${n},${p}) = ${r}`,'Resultado.')]};}};
+
+mods.combin={cat:'comb',n:'COMBINAÇÃO',d:'<b>Combinação</b>: escolher p de n onde ORDEM NÃO IMPORTA. Ex: escolher 3 alunos entre 10 = C(10,3) = 120.',f:'C(n,p) = n! / [p!(n-p)!]',i:[{id:'n',l:'n total',v:10},{id:'p',l:'p escolhidos',v:3}],s:(n,p)=>{n=Math.floor(n);p=Math.floor(p); if(p>n||p<0)return{final:'Erro',sub:'p≤n',steps:[]}; let fn=fact(n),fp=fact(p),fnp=fact(n-p),r=fn/(fp*fnp); return{final:`C(${n},${p}) = ${r.toLocaleString()}`,sub:`${r} combinações`,steps:[S('PASSO 1',`n=${n}, p=${p}. Ordem NÃO importa.`,'Combinação.'),S('PASSO 2',`C = ${n}!/[${p}!×${n-p}!]`,'Fórmula.'),S('PASSO 3',`${n}! = ${fn}\n${p}! = ${fp}\n${n-p}! = ${fnp}`,'Fatoriais.'),S('PASSO 4',`C = ${fn}/(${fp}×${fnp}) = ${r}`,'Dividir.'),S('FINAL',`C(${n},${p}) = ${r}`,'Resultado.')]};}};
+
+mods.prob={cat:'comb',n:'PROBABILIDADE',d:'<b>Probabilidade</b>: chance de um evento. P = favoráveis ÷ possíveis. ×100 = %.',f:'P = favoráveis / possíveis',i:[{id:'f',l:'favoráveis',v:3},{id:'t',l:'possíveis',v:6}],s:(f,t)=>{if(t<=0)return{final:'Erro',sub:'t>0',steps:[]}; let p=f/t; return{final:`P = ${(p*100).toFixed(2)}%`,sub:`${f}/${t} = ${p.toFixed(4)}`,steps:[S('PASSO 1',`Favoráveis = ${f}\nPossíveis = ${t}`,'Dados.'),S('PASSO 2',`P = ${f}/${t} = ${p.toFixed(4)}`,'Dividir.'),S('PASSO 3',`P × 100 = ${(p*100).toFixed(2)}%`,'Para %.'),S('FINAL',`P = ${(p*100).toFixed(2)}%`,'Resultado.')]};}};
+
+mods.duplo={cat:'comb',n:'DUPLO !!',d:'<b>Duplo fatorial (n!!)</b>: multiplica pulando de 2 em 2. Ex: 7!!=7×5×3×1=105.',f:'n!! = n × (n-2) × (n-4) × ...',i:[{id:'n',l:'n',v:7}],s:n=>{n=Math.floor(n); if(n<0)return{final:'Erro',sub:'n≥0',steps:[]}; let arr=[]; for(let i=n;i>0;i-=2)arr.push(i); if(arr.length===0)arr=[1]; let r=df(n); return{final:`${n}!! = ${r}`,sub:arr.join('×')+' = '+r,steps:[S('PASSO 1',`${n}!! = ${arr.join('×')}`,'Pular de 2 em 2.'),S('PASSO 2',`= ${r}`,'Multiplicar.'),S('FINAL',`${n}!! = ${r}`,'Resultado.')]};}};
+
+mods.primorial={cat:'comb',n:'PRIMORIAL #',d:'<b>Primorial (n#)</b>: produto de todos os primos ≤ n. Ex: 7# = 2×3×5×7 = 210.',f:'n# = produto dos primos ≤ n',i:[{id:'n',l:'n',v:10}],s:n=>{n=Math.floor(n); if(n<2)return{final:'Erro',sub:'n≥2',steps:[]}; let pr=primes(n), r=pr.reduce((a,b)=>a*b,1); return{final:`${n}# = ${r.toLocaleString()}`,sub:pr.join('×')+' = '+r,steps:[S('PASSO 1',`Primos ≤ ${n}: ${pr.join(', ')}`,'Só primos.'),S('PASSO 2',`${pr.join('×')} = ${r}`,'Multiplicar.'),S('FINAL',`${n}# = ${r}`,'Resultado.')]};}};
+
+mods.terminal={cat:'comb',n:'TERMINAL ?',d:'<b>Terminal (n?)</b>: SOMA de 1 até n (≠ fatorial!). Gauss: n(n+1)/2. Ex: 5?=15.',f:'n? = 1+2+...+n = n(n+1)/2',i:[{id:'n',l:'n',v:5}],s:n=>{n=Math.floor(n); if(n<1)return{final:'Erro',sub:'n≥1',steps:[]}; let arr=[]; for(let i=1;i<=n;i++)arr.push(i); let r=n*(n+1)/2; return{final:`${n}? = ${r}`,sub:arr.join('+')+' = '+r,steps:[S('PASSO 1',`${n}? = ${arr.join('+')}`,'Somar de 1 até n.'),S('PASSO 2',`n(n+1)/2 = ${n}×${n+1}/2`,'Gauss.'),S('PASSO 3',`${n*(n+1)}/2 = ${r}`,'Calcular.'),S('FINAL',`${n}? = ${r}`,'Resultado.')]};}};
+
+/* ============ CÁLCULO ============ */
+mods.deriv={cat:'calc',n:'DERIVADA',d:'<b>Derivada</b>: taxa de variação. Regra do poder: (xⁿ)\'=n·xⁿ⁻¹. Constante → 0.',f:"(xⁿ)' = n·xⁿ⁻¹",i:[{id:'expr',l:'f(x)',v:'3x^3+2x',txt:true}],s:expr=>{expr=String(expr).replace(/\s/g,'').toLowerCase(); if(!expr)return{final:"f'(x)=0",sub:'Função vazia',steps:[]}; let terms=expr.match(/[+-]?[^+-]+/g)||[]; let res=[], steps=[S('PASSO 1',`f(x) = ${expr}`,'Derivar termo a termo.')]; terms.forEach((raw,i)=>{let sign=raw[0]==='-'?-1:1, t=raw.replace(/^[+-]/,''); if(!t)return; if(!t.includes('x')){steps.push(S(`PASSO ${i+2}`,`(${raw})' = 0`,'Constante → 0.'));return;} let m=t.match(/^(\d*\.?\d*)?x(?:\^(\d+))?$/); if(!m){steps.push(S(`PASSO ${i+2}`,`${raw}: formato inválido`,'Use ax^n.'));return;} let a=(m[1]===''||!m[1])?1:parseFloat(m[1]); let n=m[2]?parseInt(m[2]):1; let na=a*n, nn=n-1; let termo=nn===0?`${na}`:nn===1?`${na}x`:`${na}x^${nn}`; res.push((sign===-1?'-':'')+termo); steps.push(S(`PASSO ${i+2} - ${raw}`,`a=${a}, n=${n}\nDerivada = ${na}x^${nn}\n→ ${termo}`,'Regra do poder.'));}); let f=res.length?res.join(' + ').replace(/\+ -/g,' - '):'0'; steps.push(S('FINAL',`f'(x) = ${f}`,'Juntar.')); return{final:`f'(x) = ${f}`,sub:`De ${expr}`,steps};}};
+
+mods.binom={cat:'calc',n:'BINÓMIO',d:'<b>Binómio de Newton</b>: expande (a+b)ⁿ usando coeficientes C(n,k) do triângulo de Pascal.',f:'(a+b)ⁿ = Σ C(n,k)·a^(n-k)·b^k',i:[{id:'n',l:'n (potência)',v:3}],s:n=>{n=Math.floor(n); if(n<0||n>15)return{final:'Erro',sub:'0≤n≤15',steps:[]}; let coeffs=[]; for(let k=0;k<=n;k++)coeffs.push(fact(n)/(fact(k)*fact(n-k))); let steps=[S('PASSO 1',`(a+b)^${n}: coeficientes C(${n},k)`,'Triângulo.'),S('PASSO 2 - Coeficientes',coeffs.map((c,k)=>`C(${n},${k}) = ${c}`).join('\n'),'Combinações.')]; let termos=[]; for(let k=0;k<=n;k++){let c=coeffs[k],ap=n-k,bp=k,s=''; if(c!==1)s+=c; if(ap>0)s+='a'+(ap>1?`^${ap}`:''); if(bp>0)s+='b'+(bp>1?`^${bp}`:''); if(s==='')s='1'; termos.push(s);} let exp=termos.join(' + '); steps.push(S('PASSO 3',`${coeffs.map((c,k)=>`${c}a^${n-k}b^${k}`).join(' + ')}`,'Coef × potências.')); steps.push(S('FINAL',`(a+b)^${n} = ${exp}`,'Expansão.')); return{final:`(a+b)^${n} = ${exp}`,sub:`Coefs: ${coeffs.join(', ')}`,steps};}};
+
+/* ============ GEOMETRIA PLANA ============ */
+mods.quadrado={cat:'gpl',n:'QUADRADO',d:'<b>Quadrado</b>: 4 lados iguais, ângulos 90°. Área = lado². Perímetro = 4×lado.',f:'A = l² | P = 4l',i:[{id:'l',l:'lado',v:5}],s:l=>{let A=l*l,P=4*l; return{final:`A=${A} | P=${P}`,sub:`lado=${l}`,steps:[S('PASSO 1',`Lado = ${l}`,'Dados.'),S('PASSO 2 - Área',`A = ${l}×${l} = ${A}`,'l².'),S('PASSO 3 - Perímetro',`P = 4×${l} = ${P}`,'Soma lados.'),S('FINAL',`A=${A}, P=${P}`,'Resultado.')]};}};
+
+mods.retangulo={cat:'gpl',n:'RETÂNGULO',d:'<b>Retângulo</b>: lados opostos iguais, ângulos 90°. Área = b×h. Perímetro = 2(b+h).',f:'A = b×h | P = 2(b+h)',i:[{id:'b',l:'base b',v:5},{id:'h',l:'altura h',v:3}],s:(b,h)=>{let A=b*h,P=2*(b+h); return{final:`A=${A} | P=${P}`,sub:`${b}×${h}`,steps:[S('PASSO 1',`b=${b}, h=${h}`,'Dados.'),S('PASSO 2 - Área',`A = ${b}×${h} = ${A}`,'b×h.'),S('PASSO 3 - Perímetro',`P = 2(${b}+${h}) = ${P}`,'Soma.'),S('FINAL',`A=${A}, P=${P}`,'Resultado.')]};}};
+
+mods.triangulo={cat:'gpl',n:'TRIÂNGULO',d:'<b>Triângulo</b>: 3 lados, soma dos ângulos = 180°. Área = (b×h)/2.',f:'A = (base × altura) / 2',i:[{id:'b',l:'base',v:6},{id:'h',l:'altura',v:4}],s:(b,h)=>{let A=b*h/2; return{final:`Área = ${A}`,sub:`b=${b}, h=${h}`,steps:[S('PASSO 1',`base=${b}, altura=${h}`,'Dados.'),S('PASSO 2',`A = (${b}×${h})/2 = ${A}`,'Fórmula.'),S('FINAL',`A=${A}`,'Resultado.')]};}};
+
+mods.trianguloRet={cat:'gpl',n:'TRIÂNG. RET.',d:'<b>Triângulo retângulo</b>: ângulo 90°. Pitágoras: hip²=cat₁²+cat₂². Área = (c₁×c₂)/2.',f:'hip² = c₁² + c₂² | A=(c₁·c₂)/2',i:[{id:'c1',l:'cateto 1',v:3},{id:'c2',l:'cateto 2',v:4}],s:(c1,c2)=>{let hip=Math.sqrt(c1*c1+c2*c2),A=(c1*c2)/2,P=c1+c2+hip; return{final:`A=${A} | hip=${hip.toFixed(2)} | P=${P.toFixed(2)}`,sub:`c=${c1},${c2}`,steps:[S('PASSO 1',`catetos ${c1}, ${c2}`,'Dados.'),S('PASSO 2 - Pitágoras',`hip² = ${c1*c1}+${c2*c2} = ${c1*c1+c2*c2}\nhip = √${c1*c1+c2*c2} = ${hip.toFixed(4)}`,'Teorema.'),S('PASSO 3 - Área',`A = (${c1}×${c2})/2 = ${A}`,'Metade retângulo.'),S('FINAL',`A=${A}, hip=${hip.toFixed(2)}`,'Resultado.')]};}};
+
+mods.circulo={cat:'gpl',n:'CÍRCULO',d:'<b>Círculo</b>: raio r. Diâmetro=2r. Área=πr². Perímetro=2πr. π≈3,14159.',f:'A = πr² | C = 2πr',i:[{id:'r',l:'raio r',v:5}],s:r=>{let A=PI*r*r,C=2*PI*r; return{final:`A=${A.toFixed(2)} | C=${C.toFixed(2)}`,sub:`r=${r}`,steps:[S('PASSO 1',`raio=${r}`,'Dados.'),S('PASSO 2 - Perímetro',`C = 2π×${r} = ${C.toFixed(4)}`,'Volta.'),S('PASSO 3 - Área',`A = π×${r*r} = ${A.toFixed(4)}`,'Interior.'),S('FINAL',`A=${A.toFixed(2)}, C=${C.toFixed(2)}`,'Resultado.')]};}};
+
+mods.trapezio={cat:'gpl',n:'TRAPÉZIO',d:'<b>Trapézio</b>: 2 bases paralelas B (maior) e b (menor) e altura h. Área=(B+b)×h/2.',f:'A = (B+b)×h/2',i:[{id:'B',l:'base maior B',v:8},{id:'b',l:'base menor b',v:5},{id:'h',l:'altura h',v:4}],s:(B,b,h)=>{let A=(B+b)*h/2; return{final:`Área = ${A}`,sub:`B=${B},b=${b},h=${h}`,steps:[S('PASSO 1',`B=${B}, b=${b}, h=${h}`,'Dados.'),S('PASSO 2',`B+b = ${B+b}`,'Somar bases.'),S('PASSO 3',`A = ${B+b}×${h}/2 = ${A}`,'Fórmula.'),S('FINAL',`A=${A}`,'Resultado.')]};}};
+
+mods.losango={cat:'gpl',n:'LOSANGO',d:'<b>Losango</b>: 4 lados iguais, diagonais D e d perpendiculares. Área = (D×d)/2.',f:'A = (D × d) / 2',i:[{id:'D',l:'diagonal D',v:8},{id:'d',l:'diagonal d',v:6}],s:(D,d)=>{let A=D*d/2,lado=Math.sqrt((D/2)**2+(d/2)**2),P=4*lado; return{final:`A=${A} | P≈${P.toFixed(2)}`,sub:`D=${D},d=${d}`,steps:[S('PASSO 1',`diagonais ${D} e ${d}`,'Dados.'),S('PASSO 2 - Área',`A = (${D}×${d})/2 = ${A}`,'Produto/2.'),S('PASSO 3 - Lado',`lado = √((${D/2})²+(${d/2})²) = ${lado.toFixed(3)}`,'Pitágoras.'),S('FINAL',`A=${A}, P≈${P.toFixed(2)}`,'Resultado.')]};}};
+
+mods.paralelogramo={cat:'gpl',n:'PARALELOGR.',d:'<b>Paralelogramo</b>: lados opostos paralelos. Área = base×altura. Perímetro = 2(a+b).',f:'A = b×h | P = 2(a+b)',i:[{id:'b',l:'base b',v:6},{id:'h',l:'altura h',v:4},{id:'a',l:'lado a',v:5}],s:(b,h,a)=>{let A=b*h,P=2*(a+b); return{final:`A=${A} | P=${P}`,sub:`b=${b},h=${h},a=${a}`,steps:[S('PASSO 1',`b=${b}, h=${h}, a=${a}`,'Dados.'),S('PASSO 2 - Área',`A = ${b}×${h} = ${A}`,'b×h.'),S('PASSO 3 - Perímetro',`P = 2(${a}+${b}) = ${P}`,'2(a+b).'),S('FINAL',`A=${A}, P=${P}`,'Resultado.')]};}};
+
+mods.poligono={cat:'gpl',n:'POLÍGONO',d:'<b>Polígono regular</b>: n lados iguais de comprimento L. Área = (n·L²)/(4·tan(π/n)).',f:'A = n·L² / (4·tan(π/n))',i:[{id:'n',l:'nº lados n',v:6},{id:'L',l:'lado L',v:4}],s:(n,L)=>{n=Math.floor(n); if(n<3)return{final:'Erro',sub:'n≥3',steps:[]}; let A=n*L*L/(4*Math.tan(PI/n)), P=n*L; let soma=180*(n-2), cada=soma/n; return{final:`A≈${A.toFixed(2)} | P=${P}`,sub:`${n} lados`,steps:[S('PASSO 1',`n=${n}, L=${L}`,'Dados.'),S('PASSO 2 - Perímetro',`P = ${n}×${L} = ${P}`,'Soma lados.'),S('PASSO 3 - Área',`A = ${n}×${L}²/(4·tan(π/${n})) = ${A.toFixed(4)}`,'Fórmula.'),S('ÂNGULOS',`Soma = ${soma}°\nCada = ${cada.toFixed(2)}°`,'Internos.'),S('FINAL',`A≈${A.toFixed(2)}, P=${P}`,'Resultado.')]};}};
+
+/* ============ GEOMETRIA ESPACIAL ============ */
+mods.cubo={cat:'gpe',n:'CUBO',d:'<b>Cubo</b>: 6 faces quadradas iguais. Volume=a³. Área total=6a².',f:'V = a³ | A = 6a²',i:[{id:'a',l:'aresta a',v:4}],s:a=>{let V=a*a*a,A=6*a*a; return{final:`V=${V} | A=${A}`,sub:`a=${a}`,steps:[S('PASSO 1',`aresta=${a}`,'Dados.'),S('PASSO 2 - Volume',`V = ${a}³ = ${V}`,'a³.'),S('PASSO 3 - Área',`A = 6×${a*a} = ${A}`,'6 faces.'),S('FINAL',`V=${V}, A=${A}`,'Resultado.')]};}};
+
+mods.bloco={cat:'gpe',n:'BLOCO',d:'<b>Bloco retangular</b> (caixa): V=c·l·h. A=2(cl+ch+lh).',f:'V = c×l×h | A = 2(cl+ch+lh)',i:[{id:'c',l:'comp c',v:5},{id:'l',l:'larg l',v:3},{id:'h',l:'alt h',v:2}],s:(c,l,h)=>{let V=c*l*h,A=2*(c*l+c*h+l*h); return{final:`V=${V} | A=${A}`,sub:`${c}×${l}×${h}`,steps:[S('PASSO 1',`c=${c}, l=${l}, h=${h}`,'Dados.'),S('PASSO 2 - Volume',`V = ${c}×${l}×${h} = ${V}`,'3 dimensões.'),S('PASSO 3 - Área',`A = 2(${c*l}+${c*h}+${l*h}) = ${A}`,'Soma 6 faces.'),S('FINAL',`V=${V}, A=${A}`,'Resultado.')]};}};
+
+mods.cilindro={cat:'gpe',n:'CILINDRO',d:'<b>Cilindro</b> (lata): 2 bases circulares + lateral. V=πr²h. A=2πr(r+h).',f:'V=πr²h | A=2πr(r+h)',i:[{id:'r',l:'raio r',v:3},{id:'h',l:'altura h',v:7}],s:(r,h)=>{let V=PI*r*r*h,A=2*PI*r*(r+h); return{final:`V≈${V.toFixed(2)} | A≈${A.toFixed(2)}`,sub:`r=${r},h=${h}`,steps:[S('PASSO 1',`r=${r}, h=${h}`,'Dados.'),S('PASSO 2 - Base',`A_base = π×${r*r} = ${(PI*r*r).toFixed(4)}`,'Círculo.'),S('PASSO 3 - Volume',`V = ${(PI*r*r).toFixed(4)}×${h} = ${V.toFixed(4)}`,'Base×altura.'),S('PASSO 4 - Área',`A = 2πr(r+h) = ${A.toFixed(4)}`,'2 bases+lateral.'),S('FINAL',`V≈${V.toFixed(2)}, A≈${A.toFixed(2)}`,'Resultado.')]};}};
+
+mods.esfera={cat:'gpe',n:'ESFERA',d:'<b>Esfera</b>: bola. V=(4/3)πr³. Área=4πr².',f:'V = (4/3)πr³ | A = 4πr²',i:[{id:'r',l:'raio r',v:3}],s:r=>{let V=4/3*PI*r*r*r,A=4*PI*r*r; return{final:`V≈${V.toFixed(2)} | A≈${A.toFixed(2)}`,sub:`r=${r}`,steps:[S('PASSO 1',`raio=${r}`,'Dados.'),S('PASSO 2 - Volume',`V = (4/3)×π×${r*r*r} = ${V.toFixed(4)}`,'Fórmula.'),S('PASSO 3 - Área',`A = 4π×${r*r} = ${A.toFixed(4)}`,'Superfície.'),S('FINAL',`V≈${V.toFixed(2)}, A≈${A.toFixed(2)}`,'Resultado.')]};}};
+
+mods.cone={cat:'gpe',n:'CONE',d:'<b>Cone</b>: base circular + vértice. V=(1/3)πr²h. Geratriz g=√(r²+h²).',f:'V=(1/3)πr²h | g=√(r²+h²)',i:[{id:'r',l:'raio r',v:3},{id:'h',l:'altura h',v:4}],s:(r,h)=>{let V=1/3*PI*r*r*h,g=Math.sqrt(r*r+h*h),At=PI*r*(r+g); return{final:`V≈${V.toFixed(2)} | g=${g.toFixed(2)}`,sub:`r=${r},h=${h}`,steps:[S('PASSO 1',`r=${r}, h=${h}`,'Dados.'),S('PASSO 2 - Geratriz',`g = √(${r*r}+${h*h}) = ${g.toFixed(4)}`,'Pitágoras.'),S('PASSO 3 - Volume',`V = (1/3)π×${r*r}×${h} = ${V.toFixed(4)}`,'Fórmula.'),S('PASSO 4 - Área',`A = πr(r+g) = ${At.toFixed(4)}`,'Base+lateral.'),S('FINAL',`V≈${V.toFixed(2)}, g=${g.toFixed(2)}`,'Resultado.')]};}};
+
+mods.piramide={cat:'gpe',n:'PIRÂMIDE',d:'<b>Pirâmide</b>: base + faces triangulares + vértice. V=(1/3)×A_base×h.',f:'V = (1/3) × A_base × h',i:[{id:'b',l:'base área',v:16},{id:'h',l:'altura h',v:6}],s:(b,h)=>{let V=b*h/3; return{final:`V = ${V}`,sub:`A_base=${b}, h=${h}`,steps:[S('PASSO 1',`A_base=${b}, h=${h}`,'Dados.'),S('PASSO 2',`V = (1/3)×${b}×${h} = ${V}`,'Fórmula.'),S('FINAL',`V=${V}`,'Resultado.')]};}};
+
+/* ============ TRIGONOMETRIA ============ */
+mods.senCosTan={cat:'trig',n:'SEN/COS/TAN',d:'<b>Trigonometria</b>: sen=cat_oposto/hip. cos=cat_adjacente/hip. tan=cat_oposto/cat_adjacente.',f:'sen θ = op/hip | cos θ = adj/hip | tan θ = op/adj',i:[{id:'a',l:'ângulo (graus)',v:30}],s:a=>{let r=a*PI/180,sen=Math.sin(r),cos=Math.cos(r),tan=Math.abs(cos)<1e-10?'∞':Math.tan(r); return{final:`sen=${sen.toFixed(4)} | cos=${cos.toFixed(4)} | tan=${tan==='∞'?'∞':tan.toFixed(4)}`,sub:`θ=${a}° = ${r.toFixed(4)} rad`,steps:[S('PASSO 1',`θ = ${a}° → ${r.toFixed(4)} rad`,'Converter.'),S('PASSO 2 - sen',`sen(${a}°) = ${sen.toFixed(6)}`,'Seno.'),S('PASSO 3 - cos',`cos(${a}°) = ${cos.toFixed(6)}`,'Cosseno.'),S('PASSO 4 - tan',`tan = sen/cos = ${tan==='∞'?'∞':tan.toFixed(6)}`,'Tangente.'),S('PROVA',`sen²+cos² = ${(sen*sen+cos*cos).toFixed(4)}`,'Identidade = 1.')]};}};
+
+mods.leiSeno={cat:'trig',n:'LEI SENOS',d:'<b>Lei dos senos</b>: em qualquer triângulo, a/sen(A)=b/sen(B)=c/sen(C).',f:'a/sen(A) = b/sen(B) = c/sen(C)',i:[{id:'a',l:'lado a',v:8},{id:'A',l:'ângulo A (°)',v:30},{id:'B',l:'ângulo B (°)',v:45}],s:(a,A,B)=>{let ra=A*PI/180,rb=B*PI/180,b=a*Math.sin(rb)/Math.sin(ra); return{final:`b = ${b.toFixed(3)}`,sub:`a=${a}, A=${A}°, B=${B}°`,steps:[S('PASSO 1',`a/sen(A) = b/sen(B)`,'Lei dos senos.'),S('PASSO 2',`${a}/sen(${A}°) = b/sen(${B}°)`,'Substituir.'),S('PASSO 3',`b = ${a}×sen(${B}°)/sen(${A}°)`,'Isolar b.'),S('PASSO 4',`b = ${b.toFixed(4)}`,'Calcular.'),S('FINAL',`b ≈ ${b.toFixed(3)}`,'Resultado.')]};}};
+
+mods.leiCos={cat:'trig',n:'LEI COSSENOS',d:'<b>Lei dos cossenos</b>: generaliza Pitágoras. c²=a²+b²-2ab·cos(C).',f:'c² = a² + b² - 2ab·cos(C)',i:[{id:'a',l:'lado a',v:5},{id:'b',l:'lado b',v:7},{id:'C',l:'ângulo C (°)',v:60}],s:(a,b,C)=>{let rC=C*PI/180,c2=a*a+b*b-2*a*b*Math.cos(rC),c=Math.sqrt(c2); return{final:`c = ${c.toFixed(4)}`,sub:`a=${a},b=${b},C=${C}°`,steps:[S('PASSO 1',`c² = ${a}²+${b}²-2×${a}×${b}×cos(${C}°)`,'Fórmula.'),S('PASSO 2',`cos(${C}°) = ${Math.cos(rC).toFixed(4)}`,'Cosseno.'),S('PASSO 3',`c² = ${c2.toFixed(4)}`,'Calcular.'),S('PASSO 4',`c = √${c2.toFixed(4)} = ${c.toFixed(4)}`,'Raiz.'),S('FINAL',`c ≈ ${c.toFixed(4)}`,'Resultado.')]};}};
+
+mods.grausRad={cat:'trig',n:'GRAUS ↔ RAD',d:'<b>Conversão</b>: 180° = π rad. rad = graus×π/180.',f:'rad = graus × π/180',i:[{id:'g',l:'graus',v:90}],s:g=>{let rad=g*PI/180; return{final:`${g}° = ${rad.toFixed(4)} rad`,sub:`${(g/180).toFixed(3)}π rad`,steps:[S('PASSO 1',`${g}° → rad`,'Converter.'),S('PASSO 2',`rad = ${g}×π/180 = ${(g/180).toFixed(4)}π`,'Fórmula.'),S('PASSO 3',`= ${rad.toFixed(6)}`,'×π.'),S('FINAL',`${g}° = ${rad.toFixed(4)} rad`,'Resultado.')]};}};
+
+/* ============ PROGRESSÕES ============ */
+mods.pa={cat:'prog',n:'PA',d:'<b>Progressão Aritmética</b>: SOMA sempre a mesma razão r. Ex: 2,5,8,11 (r=3). aₙ=a₁+(n-1)r. Sₙ=n(a₁+aₙ)/2.',f:'aₙ = a₁+(n-1)r | Sₙ=n(a₁+aₙ)/2',i:[{id:'a1',l:'a₁',v:2},{id:'r',l:'razão r',v:3},{id:'n',l:'n',v:5}],s:(a1,r,n)=>{n=Math.floor(n); if(n<1)return{final:'Erro',sub:'n≥1',steps:[]}; let seq=[]; for(let i=0;i<n;i++)seq.push(a1+i*r); let an=a1+(n-1)*r,sn=n*(a1+an)/2; return{final:`a${n}=${an} | S${n}=${sn}`,sub:seq.join(', '),steps:[S('PASSO 1',`a₁=${a1}, r=${r}, n=${n}`,'PA: soma r.'),S('PASSO 2 - Sequência',`${seq.join(', ')}`,'Termos.'),S('PASSO 3',`a${n} = ${a1}+(${n}-1)×${r} = ${an}`,'Fórmula.'),S('PASSO 4',`S${n} = ${n}(${a1}+${an})/2 = ${sn}`,'Gauss.'),S('FINAL',`a${n}=${an}, S${n}=${sn}`,'Resultado.')]};}};
+
+mods.pg={cat:'prog',n:'PG',d:'<b>Progressão Geométrica</b>: MULTIPLICA pela razão q. Ex: 2,6,18,54 (q=3). aₙ=a₁·qⁿ⁻¹.',f:'aₙ=a₁·qⁿ⁻¹ | Sₙ=a₁(qⁿ-1)/(q-1)',i:[{id:'a1',l:'a₁',v:2},{id:'q',l:'razão q',v:3},{id:'n',l:'n',v:4}],s:(a1,q,n)=>{n=Math.floor(n); if(n<1)return{final:'Erro',sub:'n≥1',steps:[]}; let seq=[]; for(let i=0;i<n;i++)seq.push(a1*Math.pow(q,i)); let an=a1*Math.pow(q,n-1); let sn=q===1?n*a1:a1*(Math.pow(q,n)-1)/(q-1); return{final:`a${n}=${an} | S${n}=${sn.toFixed(2)}`,sub:seq.join(', '),steps:[S('PASSO 1',`a₁=${a1}, q=${q}, n=${n}`,'PG: multiplica q.'),S('PASSO 2 - Sequência',`${seq.join(', ')}`,'Termos.'),S('PASSO 3',`a${n} = ${a1}×${q}^${n-1} = ${an}`,'Potência.'),S('PASSO 4',`S${n} = ${a1}(${q}^${n}-1)/(${q}-1) = ${sn.toFixed(4)}`,'Fórmula.'),S('FINAL',`a${n}=${an}, S${n}=${sn.toFixed(2)}`,'Resultado.')]};}};
+
+/* ============ ESTATÍSTICA ============ */
+mods.media={cat:'est',n:'MÉDIA',d:'<b>Média aritmética</b>: soma todos e divide pela quantidade.',f:'x̄ = (x₁+x₂+...+xₙ) / n',i:[{id:'v',l:'valores (vírgula)',v:'4,7,9,10,5',txt:true}],s:v=>{let arr=parseList(v); if(arr.length===0)return{final:'Erro',sub:'insira valores',steps:[]}; let soma=arr.reduce((a,b)=>a+b,0),m=soma/arr.length; return{final:`Média = ${m.toFixed(4)}`,sub:`n=${arr.length}`,steps:[S('PASSO 1',`Valores: ${arr.join(', ')}`,'Lista.'),S('PASSO 2 - Somar',`${arr.join('+')} = ${soma}`,'Soma.'),S('PASSO 3 - Dividir',`${soma}/${arr.length} = ${m.toFixed(4)}`,'÷n.'),S('FINAL',`x̄ = ${m.toFixed(4)}`,'Resultado.')]};}};
+
+mods.mediana={cat:'est',n:'MEDIANA',d:'<b>Mediana</b>: valor do meio quando ordenado. n par → média dos 2 centrais.',f:'valor central (ordenado)',i:[{id:'v',l:'valores',v:'4,7,9,10,5',txt:true}],s:v=>{let arr=parseList(v).sort((a,b)=>a-b); if(arr.length===0)return{final:'Erro',sub:'',steps:[]}; let m=arr.length%2===1?arr[(arr.length-1)/2]:(arr[arr.length/2-1]+arr[arr.length/2])/2; return{final:`Mediana = ${m}`,sub:`ordenado: ${arr.join(',')}`,steps:[S('PASSO 1',`${arr.join(', ')}`,'Ordenar.'),S('PASSO 2',`n=${arr.length} (${arr.length%2===0?'par':'ímpar'})`,'Verificar.'),S('PASSO 3',arr.length%2===1?`Meio = ${m}`:`Média 2 centrais = ${m}`,'Cálculo.'),S('FINAL',`Mediana = ${m}`,'Resultado.')]};}};
+
+mods.moda={cat:'est',n:'MODA',d:'<b>Moda</b>: valor que mais aparece. Pode não existir ou haver mais de uma.',f:'valor mais frequente',i:[{id:'v',l:'valores',v:'2,3,3,5,7,3,8',txt:true}],s:v=>{let arr=parseList(v); if(arr.length===0)return{final:'Erro',sub:'',steps:[]}; let cnt={}; arr.forEach(x=>cnt[x]=(cnt[x]||0)+1); let max=Math.max(...Object.values(cnt)); let modas=Object.keys(cnt).filter(k=>cnt[k]===max); if(max===1)return{final:'Sem moda',sub:'todos frequência 1',steps:[S('FREQ',arr.join(', '),'Nenhum repete.')]}; return{final:`Moda = ${modas.join(', ')}`,sub:`freq = ${max}`,steps:[S('PASSO 1',`${arr.join(', ')}`,'Lista.'),S('PASSO 2 - Contar',Object.keys(cnt).map(k=>`${k}: ${cnt[k]}×`).join('\n'),'Frequências.'),S('PASSO 3',`max=${max} → ${modas.join(', ')}`,'Mais frequente.'),S('FINAL',`Moda = ${modas.join(', ')}`,'Resultado.')]};}}
+mods.variancia={cat:'est',n:'VARIÂNCIA',d:'<b>Variância</b>: mede dispersão. σ²=Σ(x-x̄)²/n. Quanto maior, mais espalhado.',f:'σ² = Σ(xᵢ-x̄)² / n',i:[{id:'v',l:'valores',v:'4,7,9,10,5',txt:true}],s:v=>{let arr=parseList(v); if(arr.length<2)return{final:'Erro',sub:'≥2 valores',steps:[]}; let m=arr.reduce((a,b)=>a+b,0)/arr.length; let sq=arr.map(x=>Math.pow(x-m,2)), soma=sq.reduce((a,b)=>a+b,0), varPop=soma/arr.length, varAmost=soma/(arr.length-1); return{final:`σ² (pop) = ${varPop.toFixed(4)}`,sub:`amostra = ${varAmost.toFixed(4)}`,steps:[S('PASSO 1 - Média',`x̄ = ${m.toFixed(4)}`,'Média.'),S('PASSO 2 - Desvios²',arr.map((x,i)=>`(${x}-${m.toFixed(4)})² = ${sq[i].toFixed(4)}`).join('\n'),'Cada desvio².'),S('PASSO 3 - Somar',`Σ = ${soma.toFixed(4)}`,'Soma.'),S('PASSO 4 - Dividir',`Pop: ${varPop.toFixed(4)}\nAmostra: ${varAmost.toFixed(4)}`,'n e n-1.'),S('FINAL',`Variância ≈ ${varPop.toFixed(4)}`,'Resultado.')]};}};
+
+mods.desvio={cat:'est',n:'DESVIO PADRÃO',d:'<b>Desvio padrão</b>: raiz da variância. Mesma unidade dos dados. σ=√σ².',f:'σ = √(Σ(xᵢ-x̄)²/n)',i:[{id:'v',l:'valores',v:'4,7,9,10,5',txt:true}],s:v=>{let arr=parseList(v); if(arr.length<2)return{final:'Erro',sub:'≥2 valores',steps:[]}; let m=arr.reduce((a,b)=>a+b,0)/arr.length; let soma=arr.reduce((a,x)=>a+Math.pow(x-m,2),0); let vp=soma/arr.length, va=soma/(arr.length-1); return{final:`σ (pop) = ${Math.sqrt(vp).toFixed(4)}`,sub:`amostra = ${Math.sqrt(va).toFixed(4)}`,steps:[S('PASSO 1 - Média',`x̄ = ${m.toFixed(4)}`,'Média.'),S('PASSO 2 - Variância',`σ² = ${vp.toFixed(4)}`,'Var.'),S('PASSO 3 - Raiz',`σ = √${vp.toFixed(4)} = ${Math.sqrt(vp).toFixed(4)}`,'√.'),S('FINAL',`σ ≈ ${Math.sqrt(vp).toFixed(4)}`,'Resultado.')]};}};
+
+/* ============ FINANCEIRA ============ */
+mods.jurosSimples={cat:'fin',n:'JUROS SIMPLES',d:'<b>Juros simples</b>: incidem só sobre o capital. J=C·i·t. M=C+J.',f:'J=C·i·t | M=C+J',i:[{id:'C',l:'capital C',v:1000},{id:'i',l:'taxa %',v:5},{id:'t',l:'tempo t',v:3}],s:(C,i,t)=>{let idec=i/100, J=C*idec*t, M=C+J; return{final:`J = ${J.toFixed(2)} | M = ${M.toFixed(2)}`,sub:`C=${C}, i=${i}%, t=${t}`,steps:[S('PASSO 1',`C=${C}, i=${i}% = ${idec}, t=${t}`,'Dados.'),S('PASSO 2 - Juros',`J = ${C}×${idec}×${t} = ${J.toFixed(2)}`,'C·i·t.'),S('PASSO 3 - Montante',`M = ${C}+${J.toFixed(2)} = ${M.toFixed(2)}`,'C+J.'),S('FINAL',`J=${J.toFixed(2)}, M=${M.toFixed(2)}`,'Resultado.')]};}};
+
+mods.jurosCompostos={cat:'fin',n:'JUROS COMPOSTOS',d:'<b>Juros compostos</b>: "juros sobre juros". M=C(1+i)ᵗ. J=M-C.',f:'M = C·(1+i)ᵗ',i:[{id:'C',l:'capital C',v:1000},{id:'i',l:'taxa %',v:5},{id:'t',l:'tempo t',v:3}],s:(C,i,t)=>{let idec=i/100, M=C*Math.pow(1+idec,t), J=M-C; return{final:`M = ${M.toFixed(2)} | J = ${J.toFixed(2)}`,sub:`C=${C}, i=${i}%, t=${t}`,steps:[S('PASSO 1',`C=${C}, i=${idec}, t=${t}`,'Dados.'),S('PASSO 2 - Fórmula',`M = ${C}×(1+${idec})^${t}`,'C(1+i)ᵗ.'),S('PASSO 3 - Fator',`(1+${idec})^${t} = ${Math.pow(1+idec,t).toFixed(6)}`,'Potência.'),S('PASSO 4 - Montante',`M = ${M.toFixed(2)}`,'Multiplicar.'),S('PASSO 5 - Juros',`J = ${J.toFixed(2)}`,'M-C.'),S('FINAL',`M=${M.toFixed(2)}, J=${J.toFixed(2)}`,'Resultado.')]};}};
+
+/* ============ LOGARITMOS ============ */
+mods.log={cat:'log',n:'LOG',d:'<b>Logaritmo</b>: "a base elevada a quanto dá o valor?". Ex: log₂(8)=3 pois 2³=8. Fórmula: log_b(x)=ln(x)/ln(b).',f:'log_b(x) = y ⇔ bʸ = x',i:[{id:'x',l:'x (valor)',v:8},{id:'b',l:'base b',v:2}],s:(x,b)=>{if(x<=0||b<=0||b===1)return{final:'Erro',sub:'x>0, b>0, b≠1',steps:[]}; let lnX=Math.log(x),lnB=Math.log(b),r=lnX/lnB; return{final:`log_${b}(${x}) = ${r.toFixed(5)}`,sub:`${b}^${r.toFixed(3)} ≈ ${x}`,steps:[S('PASSO 1 - Definição',`log_${b}(${x}) = y ⇔ ${b}^y = ${x}`,'Pergunta.'),S('PASSO 2 - Mudança base',`log_b(x) = ln(${x})/ln(${b})`,'Fórmula.'),S('PASSO 3 - ln',`ln(${x})=${lnX.toFixed(6)}\nln(${b})=${lnB.toFixed(6)}`,'Naturais.'),S('PASSO 4 - Dividir',`${lnX.toFixed(6)}/${lnB.toFixed(6)} = ${r.toFixed(6)}`,'Divisão.'),S('PROVA',`${b}^${r.toFixed(4)} = ${Math.pow(b,r).toFixed(4)}`,'Verificar.'),S('FINAL',`log_${b}(${x}) = ${r.toFixed(5)}`,'Resultado.')]};}};
+
+mods.ln={cat:'log',n:'ln (NATURAL)',d:'<b>Logaritmo natural (ln)</b>: base e≈2,71828. ln(x)=log_e(x).',f:'ln(x) = log_e(x)',i:[{id:'x',l:'x',v:10}],s:x=>{if(x<=0)return{final:'Erro',sub:'x>0',steps:[]}; let r=Math.log(x); return{final:`ln(${x}) = ${r.toFixed(6)}`,sub:`e^${r.toFixed(3)} ≈ ${x}`,steps:[S('PASSO 1',`ln(${x}) = log_e(${x})`,'Base e≈2,71828.'),S('PASSO 2',`ln(${x}) = ${r.toFixed(6)}`,'Cálculo.'),S('PROVA',`e^${r.toFixed(4)} = ${Math.exp(r).toFixed(4)}`,'Verificar.'),S('FINAL',`ln(${x}) = ${r.toFixed(6)}`,'Resultado.')]};}};
+
+mods.log10={cat:'log',n:'log₁₀',d:'<b>Logaritmo decimal</b>: base 10. log₁₀(x)=log(x). Ex: log(100)=2 pois 10²=100.',f:'log₁₀(x) = log(x)',i:[{id:'x',l:'x',v:1000}],s:x=>{if(x<=0)return{final:'Erro',sub:'x>0',steps:[]}; let r=Math.log10(x); return{final:`log₁₀(${x}) = ${r.toFixed(6)}`,sub:`10^${r.toFixed(3)} = ${x}`,steps:[S('PASSO 1',`log₁₀(${x})`,'Base 10.'),S('PASSO 2',`= ${r.toFixed(6)}`,'Cálculo.'),S('PROVA',`10^${r.toFixed(4)} = ${Math.pow(10,r).toFixed(4)}`,'Verificar.'),S('FINAL',`log₁₀(${x}) = ${r.toFixed(6)}`,'Resultado.')]};}};
+
+/* ============ RENDER ============ */
+let curCat='arit';
+let curMod='mmc';
+
+function render(){
+  const catsEl=document.getElementById('cats');
+  catsEl.innerHTML='';
+  CATS.forEach(c=>{
+    let d=document.createElement('div');
+    d.className='tab'+(c.id===curCat?' active':'');
+    d.innerHTML=`<span class="ic">${c.ic}</span>${c.n}`;
+    d.onclick=()=>{curCat=c.id; let f=Object.keys(mods).find(k=>mods[k].cat===c.id); if(f)curMod=f; render();};
+    catsEl.appendChild(d);
+  });
+  const modsEl=document.getElementById('mods');
+  modsEl.innerHTML='';
+  Object.keys(mods).forEach(k=>{
+    if(mods[k].cat!==curCat)return;
+    let d=document.createElement('div');
+    d.className='tab'+(k===curMod?' active':'');
+    d.textContent=mods[k].n;
+    d.onclick=()=>{curMod=k; render();};
+    modsEl.appendChild(d);
+  });
+  const m=mods[curMod];
+  if(!m){document.getElementById('formulaCard').innerHTML='<div class="def">Módulo não encontrado.</div>';return;}
+  document.getElementById('formulaCard').innerHTML=`
+    <div class="label">${m.n}</div>
+    <div class="def">${m.d}</div>
+    <div class="formula">${m.f}</div>`;
+  let inps='<div class="label">ENTRADAS</div><div class="inputRow">'
+    + m.i.map(inp=>`<div class="field"><span>${inp.l}</span><input id="i-${inp.id}" type="${inp.txt?'text':'number'}" value="${inp.v}" step="any" oninput="calc()"></div>`).join('')
+    + '</div><button class="btn" onclick="calc()">🧮 CALCULAR COM PASSOS</button>';
+  document.getElementById('inputsCard').innerHTML=inps;
+  calc();
+}
+
+function calc(){
+  const m=mods[curMod];
+  if(!m)return;
+  let vals=m.i.map(inp=>{
+    let el=document.getElementById('i-'+inp.id);
+    if(!el)return inp.v;
+    return inp.txt?el.value:Number(el.value);
+  });
+  let r;
+  try{ r=m.s(...vals); }catch(e){ r={final:'Erro',sub:e.message,steps:[]}; }
+  document.getElementById('rBig').textContent=r.final||'';
+  document.getElementById('rSmall').textContent=r.sub||'';
+  let html='';
+  (r.steps||[]).forEach(s=>{
+    html+=`<div class="step"><div class="step-title">${s.t}</div><div class="step-math">${s.math||''}</div><div class="step-explain">${s.explain||''}</div></div>`;
+  });
+  document.getElementById('stepBody').innerHTML=html||'<div style="color:var(--muted);font-size:12px">Sem passos.</div>';
+}
+
+render();
+</script>
+</body>
+</html>
+```
